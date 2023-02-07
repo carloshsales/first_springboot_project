@@ -2,6 +2,7 @@ package com.spring.course.config;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import com.spring.course.entities.Category;
 import com.spring.course.entities.Order;
+import com.spring.course.entities.Product;
 import com.spring.course.entities.User;
 import com.spring.course.entities.enums.OrderStatus;
+import com.spring.course.repositories.CategoryRepository;
 import com.spring.course.repositories.OrderRepository;
+import com.spring.course.repositories.ProductRepository;
 import com.spring.course.repositories.UserRepository;
 
 @Configuration
@@ -24,27 +29,46 @@ public class TestConfig implements CommandLineRunner{
 	
 	@Autowired
 	private OrderRepository orderRepository;
+	
+	@Autowired
+	private CategoryRepository categoryRepository;
+	
+	@Autowired 
+	private ProductRepository productRepository;
 
 	@Override
 	public void run(String... args) throws Exception {
 
 		User u1 = new User(null, "Jupiter", "jupiter@teste.com", "74999999999", "juju");
 		User u2 = new User(null, "Pandora", "pandora@teste.com", "74999999999", "dora");
+		userRepository.saveAll(Arrays.asList(u1,u2));
 		
 		Order o1 = new Order(null, Instant.parse("2023-02-02T22:59:00Z"), OrderStatus.PAID, u1);
 		Order o2 = new Order(null, Instant.parse("2023-02-02T22:59:00Z"), OrderStatus.PAID, u2);
+		orderRepository.saveAll(Arrays.asList(o1,o2));
 		
-		List<User> listU = new ArrayList<>();
-		listU.add(u1);
-		listU.add(u2);
-
-		userRepository.saveAll(listU);
+		Category c1 = new Category(null, "Eletronics");
+		Category c2 = new Category(null, "Books");
+		Category c3 = new Category(null, "Computers");
+		categoryRepository.saveAll(Arrays.asList(c1,c2,c3));
 		
-		List<Order> listO = new ArrayList<>();
-		listO.add(o1);
-		listO.add(o2);
+		Product p1 = new Product(null, "Notebook", "Portable computer", 3000.00, "notebookimage.com");
+		Product p2 = new Product(null, "Dracula", "Portable computer", 47.00, "draculabookimage.com");
+		Product p3 = new Product(null, "Smartphone", "Portable computer", 1235.00, "smartphoneimage.com");
+		Product p4 = new Product(null, "SmartTV", "Smart TV", 1235.00, "smartphoneimage.com");
+		Product p5 = new Product(null, "Kindle", "eletronic books", 1235.00, "smartphoneimage.com");
+		
+		p1.getCategories().add(c3);
+		p2.getCategories().add(c2);
+		p3.getCategories().add(c3);
+		p3.getCategories().add(c1);
+		p4.getCategories().add(c3);
+		p4.getCategories().add(c1);
+		p5.getCategories().add(c1);
+		p5.getCategories().add(c2);
+		p5.getCategories().add(c3);
+		productRepository.saveAll(Arrays.asList(p1,p2,p3,p4,p5));
 
-		orderRepository.saveAll(listO);
 	}
 	
 	
