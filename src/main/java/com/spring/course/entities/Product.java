@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -37,6 +40,9 @@ public class Product implements Serializable{
 	)
 	private Set<Category> categories = new HashSet<>();
 	
+	@OneToMany(mappedBy = "id.product")
+	private Set<OrderItem> items = new HashSet<>();
+	
 	public Product() {}
 	public Product(Long id, String name, String description, Double price, String imageUrl) {
 		this.id = id;
@@ -44,14 +50,6 @@ public class Product implements Serializable{
 		this.description = description;
 		this.price = price;
 		this.imageUrl = imageUrl;
-	}
-	
-	public Long getId() {
-		return id;
-	}
-	
-	public void setId(Long id) {
-		this.id = id;
 	}
 	
 	public String getName() {
@@ -88,6 +86,17 @@ public class Product implements Serializable{
 	
 	public Set<Category> getCategories() {
 		return categories;
+	}
+	
+	@JsonIgnore
+	public Set<Order> getOrders(){
+		Set<Order> setItems = new HashSet<>();
+		
+		for(OrderItem item : items) {
+			setItems.add(item.getOrder());
+		}
+		
+		return setItems;
 	}
 	
 	@Override
