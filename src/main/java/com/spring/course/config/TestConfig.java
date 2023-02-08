@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Profile;
 import com.spring.course.entities.Category;
 import com.spring.course.entities.Order;
 import com.spring.course.entities.OrderItem;
+import com.spring.course.entities.Payment;
 import com.spring.course.entities.Product;
 import com.spring.course.entities.User;
 import com.spring.course.entities.enums.OrderStatus;
@@ -46,8 +47,8 @@ public class TestConfig implements CommandLineRunner{
 		User u2 = new User(null, "Pandora", "pandora@teste.com", "74999999999", "dora");
 		userRepository.saveAll(Arrays.asList(u1,u2));
 		
-		Order o1 = new Order(null, Instant.parse("2023-02-02T22:59:00Z"), OrderStatus.PAID, u1);
-		Order o2 = new Order(null, Instant.parse("2023-02-02T22:59:00Z"), OrderStatus.PAID, u2);
+		Order o1 = new Order(null, Instant.parse("2023-02-02T20:59:00Z"), OrderStatus.PAID, u1);
+		Order o2 = new Order(null, Instant.parse("2023-02-02T22:59:00Z"), OrderStatus.WAITING_PAYMENT, u2);
 		orderRepository.saveAll(Arrays.asList(o1,o2));
 		
 		Category c1 = new Category(null, "Eletronics");
@@ -79,6 +80,10 @@ public class TestConfig implements CommandLineRunner{
 		OrderItem oi5 = new OrderItem(o1, p5, 5, p5.getPrice());
 		orderItemRepository.saveAll(Arrays.asList(oi1, oi2, oi3, oi4, oi5));
 
+		
+		Payment pay1 = new Payment(null, Instant.parse("2023-02-02T22:59:00Z"), o1);
+		o1.setPayment(pay1);
+		orderRepository.save(o1);
 	}
 	
 	
